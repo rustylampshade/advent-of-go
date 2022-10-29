@@ -7,8 +7,7 @@ import (
 )
 
 func ReadIntFromLine(filename string) (result []int) {
-	content, err := ioutil.ReadFile(filename)
-	ActOn(err)
+	content, _ := ioutil.ReadFile(filename)
 
 	for _, line := range strings.Split(string(content), "\n") {
 		number, err := strconv.Atoi(line)
