@@ -7,10 +7,14 @@ import (
 )
 
 func main() {
+	part1, part2 := solve()
+	fmt.Println("Solution for part 1: " + part1)
+	fmt.Println("Solution for part 2: " + part2)
+}
+func solve() (part1 string, part2 string) {
 	input := shared.ReadIntFromLine("./input.txt")
 
-	fmt.Println(p1(input))
-	fmt.Println(p2(input))
+	return fmt.Sprint(p1(input)), fmt.Sprint(p2(input))
 }
 
 func p1(input []int) (result int) {
