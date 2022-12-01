@@ -1,17 +1,23 @@
 package shared
 
 import (
-	"io/ioutil"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 )
 
+// For files that consist purely of one integer per line, this will return an
+// array of those integers.
 func ReadIntFromLine(filename string) (result []int) {
-	content, _ := ioutil.ReadFile(filename)
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for _, line := range strings.Split(string(content), "\n") {
+		line = strings.TrimSuffix(line, "\r")
 		number, err := strconv.Atoi(line)
-
 		if err != nil {
 			continue
 		}
