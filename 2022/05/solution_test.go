@@ -8,5 +8,4 @@ func Test04(t *testing.T) {
 	if real1 != want1 || real2 != want2 {
 		t.Fatal()
 	}
-
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"sort"
-	"strconv"
 
 	"github.com/rustylampshade/advent-of-go/shared"
 )
@@ -23,7 +22,7 @@ func solve() (part1 string, part2 string) {
 	for _, end := range append(shared.FindAll(lines, ""), len(lines)) {
 		total_elf_calories := 0
 		for _, snack := range lines[start:end] {
-			calories, _ := strconv.Atoi(snack)
+			calories := shared.Atoi(snack)
 			total_elf_calories += calories
 		}
 		calories_held = append(calories_held, total_elf_calories)

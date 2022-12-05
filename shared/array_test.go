@@ -46,13 +46,13 @@ func TestFindAllString(t *testing.T) {
 
 func TestFindAllMissing(t *testing.T) {
 	give := []string{"a", "", "b", ""}
-	want := []int{}
-	real := FindAll(give, "missing")
-	for i, v := range real {
-		if v != want[i] {
+	defer func() {
+		if r := recover(); r == nil {
 			t.Fatal()
 		}
-	}
+	}()
+
+	FindAll(give, "missing")
 }
 
 func TestMapInt(t *testing.T) {

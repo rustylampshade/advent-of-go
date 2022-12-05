@@ -1,5 +1,7 @@
 package shared
 
+import "fmt"
+
 // Return the maximum element (index and value) of this array of integers.
 func Max(array []int) (index int, value int) {
 	var max_i int
@@ -35,6 +37,13 @@ func Sum(array []int) (result int) {
 	return result
 }
 
+func Pop[V int | string](array []V, n int) (popped []V, remaining []V) {
+	if n > len(array) {
+		panic(fmt.Sprintf("Cannot pop %d elements from an array shorter than that: len=%d", n, len(array)))
+	}
+	return array[len(array)-n:], array[:len(array)-n]
+}
+
 // Return the indices of all occurences of `elem` in this list.
 func FindAll[V int | string](array []V, elem V) []int {
 	var locations []int
@@ -43,7 +52,19 @@ func FindAll[V int | string](array []V, elem V) []int {
 			locations = append(locations, i)
 		}
 	}
+	if len(locations) == 0 {
+		panic(fmt.Sprintf("Unable to find %v in given array", elem))
+	}
 	return locations
+}
+
+func FindFirst[V int | string](array []V, elem V) int {
+	for i, v := range array {
+		if v == elem {
+			return i
+		}
+	}
+	panic(fmt.Sprintf("Unable to find %v in given array", elem))
 }
 
 // Apply the function f to each element of this array of integers or strings.

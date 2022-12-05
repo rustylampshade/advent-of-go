@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"strconv"
 	"strings"
 
 	"github.com/rustylampshade/advent-of-go/shared"
@@ -38,13 +36,5 @@ func solve() (part1 string, part2 string) {
 
 func getRangeMinMax(s string) (int, int) {
 	stringNums := strings.Split(s, "-")
-	return toInt(stringNums[0]), toInt(stringNums[1])
-}
-
-func toInt(s string) int {
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		log.Fatal("Not an int: " + s)
-	}
-	return n
+	return shared.Atoi(stringNums[0]), shared.Atoi(stringNums[1])
 }

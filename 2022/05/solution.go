@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/rustylampshade/advent-of-go/shared"
@@ -30,21 +29,21 @@ func initialize(startingConfig []string) map[int][]string {
 
 func solve() (part1 string, part2 string) {
 	lines := shared.Splitlines("./input.txt")
-	divider := shared.FindAll(lines, "")[0]
+	divider := shared.FindFirst(lines, "")
 	startingConfig := lines[:divider-1]
 	moveInstructions := lines[divider+1:]
 
 	stacks := initialize(startingConfig)
 	for _, instruction := range moveInstructions {
 		words := strings.Split(instruction, " ")
-		count, _ := strconv.Atoi(words[1])
-		source, _ := strconv.Atoi(words[3])
-		target, _ := strconv.Atoi(words[5])
+		count := shared.Atoi(words[1])
+		source := shared.Atoi(words[3])
+		target := shared.Atoi(words[5])
 
 		for ; count > 0; count-- {
-			var crate string
-			crate, stacks[source] = stacks[source][len(stacks[source])-1], stacks[source][:len(stacks[source])-1]
-			stacks[target] = append(stacks[target], crate)
+			var crates []string
+			crates, stacks[source] = shared.Pop(stacks[source], 1)
+			stacks[target] = append(stacks[target], crates...)
 		}
 	}
 	for i := 1; i <= len(stacks); i++ {
@@ -54,12 +53,12 @@ func solve() (part1 string, part2 string) {
 	stacks = initialize(startingConfig)
 	for _, instruction := range moveInstructions {
 		words := strings.Split(instruction, " ")
-		count, _ := strconv.Atoi(words[1])
-		source, _ := strconv.Atoi(words[3])
-		target, _ := strconv.Atoi(words[5])
+		count := shared.Atoi(words[1])
+		source := shared.Atoi(words[3])
+		target := shared.Atoi(words[5])
 
 		var crates []string
-		crates, stacks[source] = stacks[source][len(stacks[source])-count:], stacks[source][:len(stacks[source])-count]
+		crates, stacks[source] = shared.Pop(stacks[source], count)
 		stacks[target] = append(stacks[target], crates...)
 	}
 	for i := 1; i <= len(stacks); i++ {
