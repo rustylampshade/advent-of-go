@@ -37,6 +37,7 @@ func Sum(array []int) (result int) {
 	return result
 }
 
+// Pop the final n elements off this collection.
 func Pop[V int | string](array []V, n int) (popped []V, remaining []V) {
 	if n > len(array) {
 		panic(fmt.Sprintf("Cannot pop %d elements from an array shorter than that: len=%d", n, len(array)))
@@ -44,7 +45,8 @@ func Pop[V int | string](array []V, n int) (popped []V, remaining []V) {
 	return array[len(array)-n:], array[:len(array)-n]
 }
 
-func In[V int | string](array []V, elem V) bool {
+// Test if the element `elem` is In this collection
+func TestIn[V int | string](array []V, elem V) bool {
 	for _, v := range array {
 		if v == elem {
 			return true
@@ -53,6 +55,23 @@ func In[V int | string](array []V, elem V) bool {
 	return false
 }
 
+// Test if this collection entirely consists of unique elements. This could be
+// implemented more generically with a Counts() call and then checking the frequencies
+// to ensure all are 1, but directly implementing this here lets us short-circuit and
+// return early if there are duplicates without needing to process the entire collection.
+func TestEntirelyUnique[V int | string](array []V) bool {
+	seen := map[V]bool{}
+	for _, v := range array {
+		if seen[v] {
+			return false
+		} else {
+			seen[v] = true
+		}
+	}
+	return true
+}
+
+// Return a map of the frequency each element occurs with in this collection.
 func Counts[V int | string](array []V) (counts map[V]int) {
 	counts = make(map[V]int)
 	for _, v := range array {
@@ -75,6 +94,7 @@ func FindAll[V int | string](array []V, elem V) []int {
 	return locations
 }
 
+// Return the index of the FIRST occurence of `elem` in this list
 func FindFirst[V int | string](array []V, elem V) int {
 	for i, v := range array {
 		if v == elem {

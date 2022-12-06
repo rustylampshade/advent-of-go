@@ -16,13 +16,14 @@ func main() {
 
 func solve() (part1 string, part2 string) {
 	line := shared.Splitlines("./input.txt")[0]
-	return fmt.Sprint(findUniqueSpan(line, 4)), fmt.Sprint(findUniqueSpan(line, 14))
+	letters := strings.Split(line, "")
+	return fmt.Sprint(findUniqueSpan(letters, 4)), fmt.Sprint(findUniqueSpan(letters, 14))
 }
 
-func findUniqueSpan(s string, span int) int {
+func findUniqueSpan(s []string, span int) int {
+	// Given a span of 4, we need to start with s[0:4] to have a 4-wide window.
 	for i := span - 1; i < len(s); i++ {
-		counts := shared.Counts(strings.Split(s[i-span+1:i+1], ""))
-		if all(counts, 1) {
+		if shared.TestEntirelyUnique(s[i-span+1 : i+1]) {
 			// Add one to convert from 0-index to AoC's counting.
 			return i + 1
 		}
