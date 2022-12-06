@@ -44,6 +44,23 @@ func Pop[V int | string](array []V, n int) (popped []V, remaining []V) {
 	return array[len(array)-n:], array[:len(array)-n]
 }
 
+func In[V int | string](array []V, elem V) bool {
+	for _, v := range array {
+		if v == elem {
+			return true
+		}
+	}
+	return false
+}
+
+func Counts[V int | string](array []V) (counts map[V]int) {
+	counts = make(map[V]int)
+	for _, v := range array {
+		counts[v] += 1
+	}
+	return counts
+}
+
 // Return the indices of all occurences of `elem` in this list.
 func FindAll[V int | string](array []V, elem V) []int {
 	var locations []int
