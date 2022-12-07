@@ -15,10 +15,9 @@ type Directory struct {
 	totalSize int // Computed lazily
 }
 type Command struct {
-	cmd         string
-	args        []string
-	outputStart int
-	outputEnd   int
+	cmd    string
+	args   []string
+	output []string
 }
 
 var filesystem Directory
@@ -78,8 +77,7 @@ func getCommandsFromInput(lines []string) (commands []Command) {
 		tokens := strings.Split(line, " ")
 		if tokens[0] == "$" {
 			if len(commands) > 0 {
-				commands[len(commands)-1].outputStart = start
-				commands[len(commands)-1].outputEnd = end
+				commands[len(commands)-1].output = lines[start:end]
 			}
 			commands = append(commands, Command{cmd: tokens[1], args: tokens[2:]})
 			start, end = i+1, i+1
@@ -87,8 +85,7 @@ func getCommandsFromInput(lines []string) (commands []Command) {
 			end += 1
 		}
 	}
-	commands[len(commands)-1].outputStart = start
-	commands[len(commands)-1].outputEnd = end
+	commands[len(commands)-1].output = lines[start:end]
 	return
 }
 
@@ -100,7 +97,7 @@ func (command Command) run(lines *[]string) {
 		cwd().cd(command.args[0])
 
 	case "ls":
-		cwd().ls(lines, command.outputStart, command.outputEnd)
+		cwd().ls(command.output)
 	}
 }
 
@@ -128,8 +125,8 @@ func (d *Directory) cd(target string) {
 }
 
 // List directory contents. Mutates the filesystem tree as more info is learned.
-func (d *Directory) ls(sharedLines *[]string, start int, end int) {
-	for _, outputLine := range (*sharedLines)[start:end] {
+func (d *Directory) ls(output []string) {
+	for _, outputLine := range output {
 		tokens := strings.Split(outputLine, " ")
 		if tokens[0] == "dir" {
 			dirname := tokens[1]
