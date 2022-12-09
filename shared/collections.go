@@ -2,10 +2,18 @@ package shared
 
 import "fmt"
 
+func Reverse[V int | string](array []V) []V {
+	backwards := make([]V, len(array))
+	for i, j := 0, len(array)-1; i < len(array); i, j = i+1, j-1 {
+		backwards[j] = array[i]
+	}
+	return backwards
+}
+
 // Return the maximum element (index and value) of this array of integers.
-func Max(array []int) (index int, value int) {
-	var max_i int
-	var max_v int
+func Max[V int | string](array []V) (index int, value V) {
+	max_i := -1
+	var max_v V
 	for i, v := range array {
 		if max_v < v || i == 0 {
 			max_i = i
@@ -87,9 +95,6 @@ func FindAll[V int | string](array []V, elem V) []int {
 		if v == elem {
 			locations = append(locations, i)
 		}
-	}
-	if len(locations) == 0 {
-		panic(fmt.Sprintf("Unable to find %v in given array", elem))
 	}
 	return locations
 }
