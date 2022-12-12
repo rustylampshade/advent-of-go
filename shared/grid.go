@@ -23,6 +23,18 @@ func NewGrid(inputLines []string) *Grid {
 	return p
 }
 
+func (g *Grid) SetAt(x int, y int, v string) {
+	g.content[y][x] = v
+}
+
+func (g *Grid) Set(v string) {
+	g.content[g.y][g.x] = v
+}
+
+func (g *Grid) ValAt(x int, y int) string {
+	return g.content[y][x]
+}
+
 func (g *Grid) Val() string {
 	return g.content[g.y][g.x]
 }
