@@ -30,12 +30,3 @@ func findUniqueSpan(s []string, span int) int {
 	}
 	return -1
 }
-
-func all(m map[string]int, val int) bool {
-	for _, v := range m {
-		if v != val {
-			return false
-		}
-	}
-	return true
-}

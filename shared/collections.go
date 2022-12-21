@@ -1,6 +1,9 @@
 package shared
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 func Reverse[V int | string](array []V) []V {
 	backwards := make([]V, len(array))
@@ -53,6 +56,13 @@ func Pop[V int | string](array []V, n int) (popped []V, remaining []V) {
 	return array[len(array)-n:], array[:len(array)-n]
 }
 
+func RemoveIndex[V int | string](s []V, index int) []V {
+	// Use make to avoid cloberring the underlying array beneath the slices.
+	ret := make([]V, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
+}
+
 // Test if the element `elem` is In this collection
 func TestIn[V int | string](array []V, elem V) bool {
 	for _, v := range array {
@@ -100,13 +110,15 @@ func FindAll[V int | string](array []V, elem V) []int {
 }
 
 // Return the index of the FIRST occurence of `elem` in this list
-func FindFirst[V int | string](array []V, elem V) int {
+func FindFirst[V int | string](array []V, elem V) (idx int, err error) {
 	for i, v := range array {
 		if v == elem {
-			return i
+			idx = i
+			return
 		}
 	}
-	panic(fmt.Sprintf("Unable to find %v in given array", elem))
+	err = errors.New("unable to find element")
+	return
 }
 
 // Apply the function f to each element of this array of integers or strings.

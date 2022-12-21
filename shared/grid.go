@@ -1,6 +1,10 @@
 package shared
 
-import "strings"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 type Grid struct {
 	x, y       int
@@ -21,6 +25,12 @@ func NewGrid(inputLines []string) *Grid {
 	p.LenX = len(p.content[0])
 	p.LenY = len(p.content)
 	return p
+}
+
+func (g *Grid) Print() {
+	for _, line := range g.content {
+		fmt.Println(strings.Join(line, ""))
+	}
 }
 
 func (g *Grid) SetAt(x int, y int, v string) {
@@ -63,4 +73,40 @@ func (g *Grid) SliceBelow() (ret []string) {
 		ret = append(ret, g.content[j][g.x])
 	}
 	return ret
+}
+
+func (g *Grid) ValLeft() (val string, x int, y int, err error) {
+	x, y = g.x-1, g.y
+	if g.x == 0 {
+		return val, x, y, errors.New("no value in this direction")
+	} else {
+		return g.content[y][x], x, y, nil
+	}
+}
+
+func (g *Grid) ValRight() (val string, x int, y int, err error) {
+	x, y = g.x+1, g.y
+	if g.x == g.LenX-1 {
+		return val, x, y, errors.New("no value in this direction")
+	} else {
+		return g.content[y][x], x, y, nil
+	}
+}
+
+func (g *Grid) ValAbove() (val string, x int, y int, err error) {
+	x, y = g.x, g.y-1
+	if g.y == 0 {
+		return val, x, y, errors.New("no value in this direction")
+	} else {
+		return g.content[y][x], x, y, nil
+	}
+}
+
+func (g *Grid) ValBelow() (val string, x int, y int, err error) {
+	x, y = g.x, g.y+1
+	if g.y == g.LenY-1 {
+		return val, x, y, errors.New("no value in this direction")
+	} else {
+		return g.content[y][x], x, y, nil
+	}
 }

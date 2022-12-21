@@ -29,7 +29,7 @@ func initialize(startingConfig []string) map[int][]string {
 
 func solve() (part1 string, part2 string) {
 	lines := shared.Splitlines("./input.txt")
-	divider := shared.FindFirst(lines, "")
+	divider, _ := shared.FindFirst(lines, "")
 	startingConfig := lines[:divider-1]
 	moveInstructions := lines[divider+1:]
 

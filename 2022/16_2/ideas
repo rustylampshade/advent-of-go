@@ -1,0 +1,22 @@
+So far I've been building paths of movement+opening that last n minutes. It gives a quite long path sequence since the pair will open most valves long
+before the 30 minute timer. 
+
+Instead...
+
+Could reconceptualize the problem as only having a subset of valves that matter:
+v1 = 20
+v2 = 18
+v3 = 15
+v4 = 9
+...
+
+The problem will ultimately be solved by finding the permutation of these (v1, v2, v3) or (v2, v3, v4, v1) that gives the most steam release. 
+
+1. I would need to figure out how to compute permutations in Go
+2. If I had a map[map]int where I gave tgt then src and got num steps, showing the distnace from A -> B, then things could be easy.
+I have my ordered valves and know that BB is closed and high value. I know my start and elephant's starting point, and can look in this lookup table to
+see how many steps it takes to get there, then n+1 is the time it takes him or I to get there and open. 
+3. Would need to take elephant's minutes and my minutes separately, each get 26 to move and open, but the openness needs to be global state.
+
+There'd still be a best permutation or not.
+Maybe start with P and see what my score is if I do all P_valves in P. That gets a score. (floored based on 26 min cutoff)

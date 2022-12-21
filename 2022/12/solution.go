@@ -6,39 +6,15 @@ import (
 	"github.com/rustylampshade/advent-of-go/shared"
 )
 
-/*
-For Day 8 I had added a shared.Grid class that can parse things that look like 2-D maps
-and give some utility functions for walking around that map in four directions. I want to
-reuse that here.
-
-The shared.Grid class has a unique "constructor" called shared.NewGrid([]string) where I pass
-in the lines that need to be parsed into the grid.
-
-I first tried to just create `hill = shared.NewGrid(lines)` but then my `hill` variable is of
-type shared.Grid and I can ONLY use the methods that already exist on the Grid class, defined in
-the shared package. I attempted to define `func (g *shared.Grid) getStart()` and got an error that
-"cannot define new methods on non-local type shared.Grid". Meaning I am not allowed to adjust the
-methods of a type that is defined in a new package.
-
-So the internet recommends that I extend the shared.Grid type into a type that IS defined in this
-local package, so here I have `type Hill struct { shared.Grid }`. Neat, now I can make Hills as kind
-of a special-case of Grids, and I can at least declare new methods that act on Hills (but wouldn't
-generically work on Grids). Good good.
-
-But the last problem -- How do I initialize `hill` now?! `hill := shared.NewGrid(lines)` still sets
-`hill` to be a shared.Grid, and I can't figure out casts to force it into being a Hill. Internet snippets
-show examples like
-
-	myVar := ExtendedType{blah}
-
-But that seems to expect that my base type uses the default initialization. Halp.
-*/
 type Hill struct {
-	shared.Grid
+	*shared.Grid
 }
 type Coord struct {
 	x, y int
 }
+
+var bestPath []Coord
+var bestLetter string
 
 func main() {
 	part1, part2 := solve()
@@ -48,12 +24,44 @@ func main() {
 }
 
 func solve() (part1 string, part2 string) {
-	hill := shared.NewGrid(shared.Splitlines("./input.txt"))
+	hill := Hill{shared.NewGrid(shared.Splitlines("./input.txt"))}
 
-	hill.getStart()
-	hill.getGoal()
-	fmt.Println(hill)
+	start := hill.getStart()
+	goal := hill.getGoal()
+	bestPath = make([]Coord, 0)
+	bestLetter = "a"
+
+	hill.findAllPaths(start, goal, []Coord{})
+	fmt.Println(len(bestPath))
 	return
+}
+
+func (hill *Hill) findAllPaths(start Coord, goal Coord, path []Coord) {
+	if len(path) > len(bestPath) && len(bestPath) > 0 {
+		return
+	}
+	if start == goal {
+		if len(path) < len(bestPath) || len(bestPath) == 0 {
+			fmt.Printf("Found a new best path of length %v\n", len(path))
+			bestPath = path
+		}
+		return
+	}
+	for _, move := range hill.getValidMoves(start) {
+		if TestIn(path, move) {
+			continue
+		}
+		hill.findAllPaths(move, goal, append(path, start))
+	}
+}
+
+func TestIn(path []Coord, c Coord) bool {
+	for _, seen := range path {
+		if c == seen {
+			return true
+		}
+	}
+	return false
 }
 
 func (hill *Hill) getStart() Coord {
@@ -78,4 +86,38 @@ func (hill *Hill) getGoal() Coord {
 		}
 	}
 	panic("Couldn't find a goal 'E'!")
+}
+
+func (hill *Hill) getValidMoves(target Coord) (moves []Coord) {
+	hill.Move(target.x, target.y)
+	current := hill.Val()
+	if current > bestLetter {
+		bestLetter = current
+		fmt.Printf("New high! %v\n", bestLetter)
+	}
+	if height, x, y, err := hill.ValRight(); err == nil {
+		if validStep(current, height) {
+			moves = append(moves, Coord{x, y})
+		}
+	}
+	if height, x, y, err := hill.ValAbove(); err == nil {
+		if validStep(current, height) {
+			moves = append(moves, Coord{x, y})
+		}
+	}
+	if height, x, y, err := hill.ValBelow(); err == nil {
+		if validStep(current, height) {
+			moves = append(moves, Coord{x, y})
+		}
+	}
+	if height, x, y, err := hill.ValLeft(); err == nil {
+		if validStep(current, height) {
+			moves = append(moves, Coord{x, y})
+		}
+	}
+	return
+}
+
+func validStep(src string, tgt string) bool {
+	return int(rune(tgt[0]))-int(rune(src[0])) <= 1
 }
